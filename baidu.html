@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-decoration: none;
+        }
+
+        div {
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+        }
+
+        input {
+            width: 200px;
+            height: 30px;
+            outline: none;
+        }
+
+        button {
+            width: 60px;
+            height: 34px;
+            border: 0;
+            outline: none;
+            text-align: center;
+        }
+
+        li {
+            line-height: 30px;
+
+        }
+
+        a {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <input type="text" placeholder="请输入关键字" id="inp">
+    <button id="but">搜索</button>
+    <ul id="dxd"></ul>
+    <script>
+        let inp = document.getElementById("inp")
+        let ul = document.getElementById("dxd")
+        let but = document.getElementById("but")
+        but.onclick = function () {
+            setTimeout(function () {
+                //   当点击的时候动态创建script 跨域
+                let scr = document.createElement("script")
+                scr.src = 'http://suggestion.baidu.com/su?wd=' + inp.value + '&cb=callback';
+                document.body.appendChild(scr)
+            }, 2000)
+        }
+
+        //    callback 回调函数
+        function callback(data) {
+            ul.innerHTML = "";
+            //    遍历数组 data.s
+            for (var i = 0; i < data.s.length; i++) {
+                //   创建li 将每条遍历的项添加到li中
+                let li = document.createElement("li")
+                li.innerHTML = "<a>" + data.s[i] + "</a>"
+                ul.appendChild(li)
+            }
+            //    获取所有li 将li的内容添加到input中
+            var lis = document.getElementsByTagName("li")
+            //    遍历lis
+            for (var a = 0; a < lis.length; a++) {
+                //    给li加点击事件
+                lis[a].onclick = function () {
+                    inp.value = this.innerText;
+                    this.getElementsByTagName("a")[0].href = 'https://www.baidu.com/s?Wd=' + inp.value + '';
+                }
+            }
+        }
+        var a = -1
+        document.onkeydown = function (event) {
+            var lis = document.getElementsByTagName("li")
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if (e && e.keyCode == 40) {
+                a++
+                if (a >= lis.length) {
+                    a = 0
+                }
+                for (var i = 0; i < lis.length; i++) {
+                    lis[i].style.background = ""
+                }
+                lis[a].style.background = "red"
+                inp.value = lis[a].innerText
+            }
+            if (e && e.keyCode == 38) {
+                a--
+                if (a == -1) {
+                    a = lis.length - 1
+                }
+                for (var i = 0; i < lis.length; i++) {
+                    lis[i].style.background = ""
+                }
+                lis[a].style.background = "red"
+                inp.value = lis[a].innerText
+            }
+        };
+    </script>
+</div>
+</body>
+</html>
